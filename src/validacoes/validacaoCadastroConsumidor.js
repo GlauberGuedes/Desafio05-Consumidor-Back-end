@@ -44,6 +44,9 @@ function validarConsumidor(
   if (String(telefone).includes(".")) {
     return "O campo 'telefone' tem que ser um número válido.";
   }
+  if(telefone.length < 10 || telefone.length > 12) {
+    return "O campo 'telefone' tem que ser um número válido.";
+  }
   if (!senha) {
     return "O campo 'senha' é obrigatório.";
   }
