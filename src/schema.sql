@@ -18,7 +18,8 @@ CREATE TABLE pedido (
 	id SERIAL NOT NULL PRIMARY KEY,
   	valor INTEGER NOT NULL,
   	consumidor_id INTEGER NOT NULL REFERENCES consumidor(id),
-  	restaurante_id INTEGER NOT NULL REFERENCES restaurante(id)
+  	restaurante_id INTEGER NOT NULL REFERENCES restaurante(id),
+  	taxa_de_entrega INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE itens_do_pedido (
