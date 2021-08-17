@@ -10,7 +10,7 @@ CREATE TABLE endereco_consumidor (
 	id SERIAL NOT NULL PRIMARY KEY,
   	consumidor_id INTEGER NOT NULL REFERENCES consumidor(id),
   	cep BIGINT NOT NULL,
-  	rua TEXT NOT NULL,
+  	endereco TEXT NOT NULL,
   	complemento TEXT
 );
 
