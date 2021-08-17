@@ -1,5 +1,6 @@
 const knex = require("../conexao");
 const validarConsumidor = require("../validacoes/validacaoCadastroConsumidor");
+const validarEndereco = require('../validacoes/validacaoCadastroEndereco');
 const bcrypt = require("bcrypt");
 
 async function cadastrarConsumidor(req, res) {
@@ -65,7 +66,36 @@ async function obterConsumidor(req, res) {
   }
 }
 
+async function cadastrarEndereco(req, res) {
+  const { consumidor } = req;
+  const { cep, endereco, complemento } = req.body;
+
+  try {
+    const erroValidacaoEndereco = validarEndereco(cep, endereco, complemento);
+
+    if (erroValidacaoEndereco) {
+      return res.status(400).json(erroValidacaoEndereco);
+    }
+
+    const enderecoCadastrado = await knex('endereco_consumidor').insert({
+      consumidor_id: consumidor.id, 
+      cep,
+      endereco,
+      complemento
+    });
+
+    if (!enderecoCadastrado) {
+      return res.status(400).json("O endereço não foi cadastrado.");
+    }
+
+    return res.status(200).json();
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+}
+
 module.exports = { 
   cadastrarConsumidor,
-  obterConsumidor
+  obterConsumidor,
+  cadastrarEndereco
 };
