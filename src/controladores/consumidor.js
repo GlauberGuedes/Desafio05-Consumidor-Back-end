@@ -83,6 +83,12 @@ async function cadastrarEndereco(req, res) {
       return res.status(400).json(erroValidacaoEndereco);
     }
 
+    const enderecoJaExiste = await knex('endereco_consumidor').where({ consumidor_id: consumidor.id });
+
+    if (enderecoJaExiste.length > 0) {
+      return res.status(400).json("Já existe um endereço cadastrado para esse usuário.");
+    }
+
     const enderecoCadastrado = await knex('endereco_consumidor').insert({
       consumidor_id: consumidor.id, 
       cep,
