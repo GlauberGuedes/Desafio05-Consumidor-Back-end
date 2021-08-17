@@ -7,7 +7,7 @@ function validarEndereco(
         return "O campo 'CEP' é obrigatório.";
     }
 
-    if (typeof cep !== 'number') {
+    if (!Number(cep)) {
         return "O CEP deve ser preenchido apenas com números.";
     }
 
@@ -15,7 +15,7 @@ function validarEndereco(
         return "Insira um CEP válido.";
     }
 
-    if (String(cep).length < 8 || String(cep).length > 8) {
+    if (cep.length < 8 || cep.length > 8) {
         return "O CEP deve ser composto por 8 dígitos.";
     }
 
