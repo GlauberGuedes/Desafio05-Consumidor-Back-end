@@ -54,10 +54,16 @@ async function obterConsumidor(req, res) {
   try {
     const enderecoConsumidor = await knex('endereco_consumidor')
       .join('consumidor', 'endereco_consumidor.consumidor_id', 'consumidor.id')
+      .select(
+        'endereco_consumidor.cep',
+        'endereco_consumidor.endereco',
+        'endereco_consumidor.complemento'
+      )
+      .where({ consumidor_id: consumidor.id })
       .first();
     
     if (!enderecoConsumidor) {
-      return res.status(400).json({ consumidor, endereco: "O usuário não possui nenhum endereço cadastrado no sistema."});
+      return res.status(200).json({ consumidor, endereco: "O usuário não possui nenhum endereço cadastrado no sistema."});
     }
 
     return res.status(200).json({ consumidor, endereco: enderecoConsumidor });
