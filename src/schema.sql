@@ -16,15 +16,16 @@ CREATE TABLE endereco_consumidor (
 
 CREATE TABLE pedido (
 	id SERIAL NOT NULL PRIMARY KEY,
-  	valor INTEGER NOT NULL,
   	consumidor_id INTEGER NOT NULL REFERENCES consumidor(id),
   	restaurante_id INTEGER NOT NULL REFERENCES restaurante(id),
-  	taxa_de_entrega INTEGER NOT NULL DEFAULT 0
+  	taxa_de_entrega INTEGER NOT NULL DEFAULT 0,
+	valor_total INTEGER NOT NULL
 );
 
 CREATE TABLE itens_do_pedido (
 	id SERIAL NOT NULL PRIMARY KEY,
   	pedido_id INTEGER NOT NULL REFERENCES pedido(id),
   	produto_id INTEGER NOT NULL REFERENCES produto(id),
-  	quantidade INTEGER NOT NULL
+  	quantidade INTEGER NOT NULL,
+	subtotal INTEGER NOT NULL
 );
