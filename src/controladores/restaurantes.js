@@ -18,13 +18,20 @@ async function obterRestaurante(req, res) {
     const { id } = req.params;
 
     try {
-        const restaurante = await knex('restaurante').where({ id }).first();
-
+        const restaurante = await knex('restaurante')
+            .join('categoria', {'categoria.id': 'restaurante.categoria_id'})
+            .select(
+                'restaurante.*',
+                'categoria.imagem as categoria_imagem'
+            )
+            .where('restaurante.id', id)
+            .first();
+        
         if (!restaurante) {
             return res.status(400).json("Nenhum restaurante encontrado.");
         }
 
-        return res.status(200).json(restaurante);
+        return res.status(200).json({ restaurante });
     } catch (error) {
         return res.status(400).json(error.message);
     }
