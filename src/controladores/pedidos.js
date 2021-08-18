@@ -40,7 +40,7 @@ async function registrarPedido(req, res) {
             valor_total
         }).returning('*');
 
-        if (!pedidoRegistrado) {
+        if (pedidoRegistrado.length === 0) {
             return res.status(400).json("Erro ao registrar o pedido.");
         }
 
@@ -52,7 +52,7 @@ async function registrarPedido(req, res) {
             quantidade
         });
 
-        if (!itemDoPedidoRegistrado) {
+        if (itemDoPedidoRegistrado.length === 0) {
             return res.status(400).json("Erro ao registrar item.");
         }
 
