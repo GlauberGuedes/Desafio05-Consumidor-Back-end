@@ -7,8 +7,7 @@ async function registrarPedido(req, res) {
         subtotal, 
         taxa_de_entrega, 
         valor_total, 
-        produto_id, 
-        quantidade 
+        produtos 
     } = req.body;
 
     let pedidoId;
@@ -18,23 +17,30 @@ async function registrarPedido(req, res) {
             subtotal, 
             taxa_de_entrega, 
             valor_total, 
-            produto_id, 
-            quantidade 
+            produtos,
         );
 
         if (erroValidacaoPedido) {
             return res.status(400).json(erroValidacaoPedido);
         } 
 
-        const produtoExiste = await knex('produto').where({ id: produto_id }).first().returning('*');
+        for(const produto of produtos) {
+            const produtoAtivo = await knex('produto').where({id: produto.id}).first();
 
-        if (!produtoExiste) {
-            return res.status(404).json("Produto não encontrado.");
+            if(!produtoAtivo.ativo) {
+                return res.status(400).json(`O produto ${produtoAtivo.nome} não está mais ativo.`)
+            }
+        }
+
+        const restaurante = await knex('restaurante').where({nome: produtos[0].nomeRestaurante}).first();
+
+        if(restaurante.length === 0) {
+            return res.status(400).json("Restaurante não encontrado.");
         }
         
         const pedidoRegistrado = await knex('pedido').insert({
             consumidor_id: consumidor.id,
-            restaurante_id: produtoExiste.restaurante_id,
+            restaurante_id: restaurante.id,
             subtotal,
             taxa_de_entrega,
             valor_total
@@ -45,15 +51,20 @@ async function registrarPedido(req, res) {
         }
 
         pedidoId = pedidoRegistrado[0].id;
-        
-        const itemDoPedidoRegistrado = await knex('itens_do_pedido').insert({
-            pedido_id: pedidoId,
-            produto_id,
-            quantidade
-        });
 
-        if (itemDoPedidoRegistrado.length === 0) {
-            return res.status(400).json("Erro ao registrar item.");
+        for(const produto of produtos) {
+
+            const itemDoPedidoRegistrado = await knex('itens_do_pedido').insert({
+                pedido_id: pedidoId,
+                produto_id: produto.id,
+                quantidade: produto.quantidade,
+                preco: produto.preco,
+                subtotal: produto.preco*produto.quantidade
+            }).returning('*');
+
+            if (itemDoPedidoRegistrado.length === 0) {
+                return res.status(400).json("Erro ao registrar item.");
+            }
         }
 
         return res.status(200).json();

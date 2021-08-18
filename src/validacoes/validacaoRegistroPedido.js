@@ -2,23 +2,19 @@ function validarPedido(
     subtotal, 
     taxa_de_entrega, 
     valor_total, 
-    produto_id, 
-    quantidade 
+    produtos
 ) {
-    if (!produto_id) {
-        return "O ID do produto deve ser informado.";
+    if(produtos.length === 0) {
+        return "O produto deve ser informado.";
     }
-
-    if (!Number(produto_id)) {
-        return "O ID do produto deve ser preenchido com um número.";
-    }
-
-    if (!quantidade) {
-        return "A quantidade do item deve ser informada.";
-    }
-
-    if (!Number(quantidade)) {
-        return "A quantidade deve ser preenchida com um número.";
+    
+    for(const produto of produtos) {
+        if(!produto.id) {
+            return "O produto deve ser informado.";
+        }
+        if(!produto.quantidade) {
+            return "A quantidade do produto deve ser informada.";
+        }
     }
 
     if (!subtotal) {
