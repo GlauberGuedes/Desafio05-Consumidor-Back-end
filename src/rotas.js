@@ -12,7 +12,8 @@ rotas.post('/login', login.loginConsumidor);
 rotas.use(verificarToken);
 
 rotas.get('/restaurantes', restaurantes.listarRestaurantes);
-rotas.get('/restaurantes/:id', produtos.listarProdutos);
+rotas.get('/restaurantes/:id', restaurantes.obterRestaurante);
+rotas.get('/restaurantes/:id/produtos', produtos.listarProdutos);
 rotas.get('/consumidor', consumidor.obterConsumidor);
 rotas.post('/endereco', consumidor.cadastrarEndereco);
 

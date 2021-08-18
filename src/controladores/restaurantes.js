@@ -5,7 +5,7 @@ async function listarRestaurantes(req, res) {
         const restaurantes = await knex('restaurante');
 
         if (restaurantes.length === 0) {
-            return res.status(400).json('Nenhum restaurante encontrado.');
+            return res.status(400).json("Nenhum restaurante encontrado.");
         }
 
         return res.status(200).json(restaurantes);
@@ -14,6 +14,23 @@ async function listarRestaurantes(req, res) {
     }
 }
 
+async function obterRestaurante(req, res) {
+    const { id } = req.params;
+
+    try {
+        const restaurante = await knex('restaurante').where({ id }).first();
+
+        if (!restaurante) {
+            return res.status(400).json("Nenhum restaurante encontrado.");
+        }
+
+        return res.status(200).json(restaurante);
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
 module.exports = { 
-    listarRestaurantes
+    listarRestaurantes,
+    obterRestaurante
 };
