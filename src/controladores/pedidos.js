@@ -8,7 +8,7 @@ async function registrarPedido(req, res) {
         taxa_de_entrega, 
         valor_total,
         restauranteId,
-        produtos 
+        produtos,
     } = req.body;
 
     let pedidoId;
@@ -26,6 +26,12 @@ async function registrarPedido(req, res) {
             return res.status(400).json(erroValidacaoPedido);
         } 
 
+        const enderecoConsumidor = await knex('endereco_consumidor').where({consumidor_id: consumidor.id}).first();
+
+        if(!enderecoConsumidor) {
+            return res.status(400).json("É necessário preencher o endeço.");
+        }
+
         for(const produto of produtos) {
             const produtoAtivo = await knex('produto').where({id: produto.id}).first();
 
@@ -36,7 +42,7 @@ async function registrarPedido(req, res) {
 
         const restaurante = await knex('restaurante').where({id: restauranteId}).first();
 
-        if(restaurante.length === 0) {
+        if(!restaurante) {
             return res.status(400).json("Restaurante não encontrado.");
         }
         
@@ -83,14 +89,14 @@ async function dadosPedido(req, res) {
     try{
         const restaurante = await knex('restaurante').where({id: carrinho[0].idRestaurante}).first();
 
-        if(restaurante.length === 0) {
+        if(!restaurante) {
             return res.status(400).json("Restaurante não encontrado.");
         }
 
         for(const produto of carrinho) {
             const produtoDoCarrinho = await knex('produto').where({id: produto.id }).first();
 
-            if(produtoDoCarrinho.length === 0) {
+            if(!produtoDoCarrinho) {
                 return res.status(400).json("Produto não encontrado.");
             }
 
