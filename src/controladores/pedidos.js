@@ -6,7 +6,8 @@ async function registrarPedido(req, res) {
     const { 
         subtotal, 
         taxa_de_entrega, 
-        valor_total, 
+        valor_total,
+        restauranteId,
         produtos 
     } = req.body;
 
@@ -15,8 +16,9 @@ async function registrarPedido(req, res) {
     try {
         const erroValidacaoPedido = validarPedido(
             subtotal, 
-            taxa_de_entrega, 
-            valor_total, 
+            taxa_de_entrega,
+            valor_total,
+            restauranteId,
             produtos,
         );
 
@@ -32,7 +34,7 @@ async function registrarPedido(req, res) {
             }
         }
 
-        const restaurante = await knex('restaurante').where({nome: produtos[0].nomeRestaurante}).first();
+        const restaurante = await knex('restaurante').where({id: restauranteId}).first();
 
         if(restaurante.length === 0) {
             return res.status(400).json("Restaurante não encontrado.");
@@ -59,7 +61,7 @@ async function registrarPedido(req, res) {
                 produto_id: produto.id,
                 quantidade: produto.quantidade,
                 preco: produto.preco,
-                subtotal: produto.preco*produto.quantidade
+                subtotal: produto.subtotal
             }).returning('*');
 
             if (itemDoPedidoRegistrado.length === 0) {

@@ -1,9 +1,14 @@
 function validarPedido(
     subtotal, 
     taxa_de_entrega, 
-    valor_total, 
+    valor_total,
+    restauranteId,
     produtos
 ) {
+    if(!restauranteId) {
+        return "O id do restaurante deve ser informado.";
+    }
+
     if(produtos.length === 0) {
         return "O produto deve ser informado.";
     }
