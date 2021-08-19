@@ -73,6 +73,40 @@ async function registrarPedido(req, res) {
     }
 }
 
+async function dadosPedido(req, res) {
+    const carrinho  = req.body;
+
+    const produtos = [];
+    let subtotal = 0;
+    try{
+        const restaurante = await knex('restaurante').where({id: carrinho[0].idRestaurante}).first();
+
+        if(restaurante.length === 0) {
+            return res.status(400).json("Restaurante não encontrado.");
+        }
+
+        for(const produto of carrinho) {
+            const produtoDoCarrinho = await knex('produto').where({id: produto.id }).first();
+
+            if(produtoDoCarrinho.length === 0) {
+                return res.status(400).json("Produto não encontrado.");
+            }
+
+            produtoDoCarrinho.quantidade = produto.quantidade;
+            produtoDoCarrinho.subtotal = produto.quantidade * produtoDoCarrinho.preco;
+
+            subtotal += produtoDoCarrinho.subtotal;
+            produtos.push(produtoDoCarrinho);
+        }
+
+        return res.status(200).json({restaurante, produtos, subtotal, total: subtotal + restaurante.taxa_entrega});
+
+    }catch(error) {
+        return res.status(400).json(error.message)
+    }
+}
+
 module.exports = {
-    registrarPedido
+    registrarPedido,
+    dadosPedido
 }
