@@ -29,7 +29,7 @@ async function registrarPedido(req, res) {
         const enderecoConsumidor = await knex('endereco_consumidor').where({consumidor_id: consumidor.id}).first();
 
         if(!enderecoConsumidor) {
-            return res.status(400).json("É necessário preencher o endeço.");
+            return res.status(400).json("É necessário preencher o endereço.");
         }
 
         for(const produto of produtos) {
