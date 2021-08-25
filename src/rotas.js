@@ -18,6 +18,7 @@ rotas.get('/restaurantes/:id/produtos', produtos.listarProdutos);
 rotas.get('/consumidor', consumidor.obterConsumidor);
 rotas.post('/endereco', consumidor.cadastrarEndereco);
 rotas.post('/pedidos', pedidos.registrarPedido);
+rotas.get('/pedidos', pedidos.detalharPedido);
 rotas.post('/dados-pedido', pedidos.dadosPedido);
 
 
