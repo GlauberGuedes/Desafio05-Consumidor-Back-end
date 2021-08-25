@@ -21,6 +21,7 @@ rotas.post('/pedidos', pedidos.registrarPedido);
 rotas.get('/pedidos', pedidos.detalharPedido);
 rotas.post('/dados-pedido', pedidos.dadosPedido);
 rotas.post('/entregas/:id/ativar', pedidos.ativarEntrega);
+rotas.post('/entregas/:id/desativar', pedidos.desativarEntrega);
 
 
 module.exports = rotas; 

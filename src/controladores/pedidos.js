@@ -184,9 +184,39 @@ async function ativarEntrega(req, res) {
     }
 }
 
+async function desativarEntrega(req, res) {
+    const { consumidor } = req;
+    const { id } = req.params;
+
+    try {
+        const pedido = await knex("pedido")
+            .where({ id, consumidor_id: consumidor.id })
+            .first();
+
+        if (!pedido) {
+            return res.status(404).json("Pedido não encontrado.");
+        }
+
+        const entregaDesativada = await knex("pedido")
+            .where({ id })
+            .update({
+                entregue: false,
+            });
+        
+        if (entregaDesativada.length === 0) {
+            return res.status(400).json("Erro ao desativar a entrega do pedido.");
+        }
+
+        return res.status(200).json();
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
 module.exports = {
     registrarPedido,
     dadosPedido,
     detalharPedido,
-    ativarEntrega
+    ativarEntrega,
+    desativarEntrega
 }
