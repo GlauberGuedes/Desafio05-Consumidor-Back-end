@@ -114,7 +114,49 @@ async function dadosPedido(req, res) {
     }
 }
 
+async function detalharPedido(req, res) {
+    const { consumidor } = req;
+
+    try {
+        const pedido = await knex("pedido")
+            .join("restaurante", "pedido.restaurante_id", "restaurante.id")
+            .join("categoria", "restaurante.categoria_id", "categoria.id")
+            .where({ consumidor_id: consumidor.id })
+            .orderBy("pedido.id", "desc")
+            .first()
+            .select(
+                "pedido.id as idPedido",
+                "restaurante.nome as nomeRestaurante",
+                "restaurante.imagem as imagemRestaurante",
+                "categoria.imagem as imagemCategoria",
+                "pedido.subtotal as subtotalPedido",
+                "pedido.valor_total as valorTotalPedido",
+                "pedido.taxa_de_entrega as taxaDeEntrega",
+                "pedido.saiu_para_entrega as saiuParaEntrega",
+                "pedido.entregue as foiEntregue"
+            );
+        
+        const itensDoPedido = await knex("itens_do_pedido")
+            .join("produto", "itens_do_pedido.produto_id", "produto.id")
+            .where({ pedido_id: pedido.idPedido })
+            .select(
+                "produto.nome as nomeProduto",
+                "produto.imagem as imagemProduto",
+                "itens_do_pedido.quantidade",
+                "itens_do_pedido.subtotal as subtotalProduto"
+            );   
+
+            pedido.itensPedido = itensDoPedido;
+        
+        return res.status(200).json(pedido);
+            
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
 module.exports = {
     registrarPedido,
-    dadosPedido
+    dadosPedido,
+    detalharPedido
 }
