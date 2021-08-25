@@ -21,4 +21,4 @@ rotas.post('/pedidos', pedidos.registrarPedido);
 rotas.post('/dados-pedido', pedidos.dadosPedido);
 
 
-module.exports = rotas;
+module.exports = rotas; 
