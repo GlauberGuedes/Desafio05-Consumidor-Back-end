@@ -155,8 +155,38 @@ async function detalharPedido(req, res) {
     }
 }
 
+async function ativarEntrega(req, res) {
+    const { consumidor } = req;
+    const { id } = req.params;
+
+    try {
+        const pedido = await knex("pedido")
+            .where({ id, consumidor_id: consumidor.id })
+            .first();
+
+        if (!pedido) {
+            return res.status(404).json("Pedido não encontrado.");
+        }
+
+        const entregaAtivada = await knex("pedido")
+            .where({ id })
+            .update({
+                entregue: true,
+            });
+        
+        if (entregaAtivada.length === 0) {
+            return res.status(400).json("Erro ao ativar a entrega do pedido.");
+        }
+
+        return res.status(200).json();
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
 module.exports = {
     registrarPedido,
     dadosPedido,
-    detalharPedido
+    detalharPedido,
+    ativarEntrega
 }
