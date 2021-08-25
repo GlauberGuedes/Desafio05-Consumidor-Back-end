@@ -20,6 +20,7 @@ rotas.post('/endereco', consumidor.cadastrarEndereco);
 rotas.post('/pedidos', pedidos.registrarPedido);
 rotas.get('/pedidos', pedidos.detalharPedido);
 rotas.post('/dados-pedido', pedidos.dadosPedido);
+rotas.post('/entregas/:id/ativar', pedidos.ativarEntrega);
 
 
 module.exports = rotas; 
