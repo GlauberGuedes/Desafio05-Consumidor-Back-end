@@ -1,11 +1,22 @@
 const knex = require('../conexao');
 
 async function listarRestaurantes(req, res) {
+    const categoria = req.query.categoria;
+    
     try {
         const restaurantes = await knex('restaurante');
 
         if (restaurantes.length === 0) {
             return res.status(400).json("Nenhum restaurante encontrado.");
+        }
+
+        if (categoria) {
+            const listaFiltrada = await knex('restaurante')
+                .join('categoria', 'restaurante.categoria_id', 'categoria.id')
+                .where('categoria.nome', 'ilike', categoria)
+                .select('restaurante.*');
+            
+            return res.status(200).json(listaFiltrada)
         }
 
         return res.status(200).json(restaurantes);
