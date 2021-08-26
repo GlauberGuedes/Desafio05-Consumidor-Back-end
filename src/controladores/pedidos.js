@@ -122,6 +122,7 @@ async function detalharPedido(req, res) {
             .join("restaurante", "pedido.restaurante_id", "restaurante.id")
             .join("categoria", "restaurante.categoria_id", "categoria.id")
             .where({ consumidor_id: consumidor.id })
+            .where({ entregue: false })
             .orderBy("pedido.id", "desc")
             .first()
             .select(
