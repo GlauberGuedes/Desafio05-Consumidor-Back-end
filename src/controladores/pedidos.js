@@ -114,7 +114,114 @@ async function dadosPedido(req, res) {
     }
 }
 
+async function detalharPedido(req, res) {
+    const { consumidor } = req;
+
+    try {
+        const pedido = await knex("pedido")
+            .join("restaurante", "pedido.restaurante_id", "restaurante.id")
+            .join("categoria", "restaurante.categoria_id", "categoria.id")
+            .where({ consumidor_id: consumidor.id })
+            .where({ entregue: false })
+            .orderBy("pedido.id", "desc")
+            .first()
+            .select(
+                "pedido.id as idPedido",
+                "restaurante.nome as nomeRestaurante",
+                "restaurante.imagem as imagemRestaurante",
+                "categoria.imagem as imagemCategoria",
+                "pedido.subtotal as subtotalPedido",
+                "pedido.valor_total as valorTotalPedido",
+                "pedido.taxa_de_entrega as taxaDeEntrega",
+                "pedido.saiu_para_entrega as saiuParaEntrega",
+                "pedido.entregue as foiEntregue"
+            );
+
+            if(!pedido) {
+                return res.status(404).json("Não foi encontrado nenhum pedido.");
+            }
+        
+        const itensDoPedido = await knex("itens_do_pedido")
+            .join("produto", "itens_do_pedido.produto_id", "produto.id")
+            .where({ pedido_id: pedido.idPedido })
+            .select(
+                "produto.nome as nomeProduto",
+                "produto.imagem as imagemProduto",
+                "itens_do_pedido.quantidade",
+                "itens_do_pedido.subtotal as subtotalProduto"
+            );   
+
+            pedido.itensPedido = itensDoPedido;
+        
+        return res.status(200).json(pedido);
+            
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
+async function ativarEntrega(req, res) {
+    const { consumidor } = req;
+    const { id } = req.params;
+
+    try {
+        const pedido = await knex("pedido")
+            .where({ id, consumidor_id: consumidor.id })
+            .first();
+
+        if (!pedido) {
+            return res.status(404).json("Pedido não encontrado.");
+        }
+
+        const entregaAtivada = await knex("pedido")
+            .where({ id })
+            .update({
+                entregue: true,
+            });
+        
+        if (entregaAtivada.length === 0) {
+            return res.status(400).json("Erro ao ativar a entrega do pedido.");
+        }
+
+        return res.status(200).json();
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
+async function desativarEntrega(req, res) {
+    const { consumidor } = req;
+    const { id } = req.params;
+
+    try {
+        const pedido = await knex("pedido")
+            .where({ id, consumidor_id: consumidor.id })
+            .first();
+
+        if (!pedido) {
+            return res.status(404).json("Pedido não encontrado.");
+        }
+
+        const entregaDesativada = await knex("pedido")
+            .where({ id })
+            .update({
+                entregue: false,
+            });
+        
+        if (entregaDesativada.length === 0) {
+            return res.status(400).json("Erro ao desativar a entrega do pedido.");
+        }
+
+        return res.status(200).json();
+    } catch (error) {
+        return res.status(400).json(error.message);
+    }
+}
+
 module.exports = {
     registrarPedido,
-    dadosPedido
+    dadosPedido,
+    detalharPedido,
+    ativarEntrega,
+    desativarEntrega
 }

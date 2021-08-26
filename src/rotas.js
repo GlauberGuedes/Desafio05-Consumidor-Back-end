@@ -12,13 +12,18 @@ rotas.post('/login', login.loginConsumidor);
 
 rotas.use(verificarToken);
 
+rotas.get('/categorias', restaurantes.listaDeCategoria);
 rotas.get('/restaurantes', restaurantes.listarRestaurantes);
 rotas.get('/restaurantes/:id', restaurantes.obterRestaurante);
 rotas.get('/restaurantes/:id/produtos', produtos.listarProdutos);
 rotas.get('/consumidor', consumidor.obterConsumidor);
 rotas.post('/endereco', consumidor.cadastrarEndereco);
+rotas.put('/consumidor', consumidor.atualizarConsumidor);
 rotas.post('/pedidos', pedidos.registrarPedido);
+rotas.get('/pedidos', pedidos.detalharPedido);
 rotas.post('/dados-pedido', pedidos.dadosPedido);
+rotas.post('/entregas/:id/ativar', pedidos.ativarEntrega);
+rotas.post('/entregas/:id/desativar', pedidos.desativarEntrega);
 
 
 module.exports = rotas; 

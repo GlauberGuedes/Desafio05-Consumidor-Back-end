@@ -1,7 +1,6 @@
 const knex = require('../conexao');
 const bcrypt = require('bcrypt');
 const validarLogin = require('../validacoes/validacaoLoginConsumidor');
-const senhaHash = require('../senhaHash');
 const jwt = require('jsonwebtoken');
 
 async function loginConsumidor(req, res) {
@@ -28,7 +27,7 @@ async function loginConsumidor(req, res) {
       return res.status(400).json('Email ou senha incorretos.');
     }
 
-    const token = jwt.sign({ id: consumidor.id }, senhaHash);
+    const token = jwt.sign({ id: consumidor.id }, process.env.SENHA_HASH);
 
     const { senha: _, ...dadosConsumidor } = consumidor;
 
