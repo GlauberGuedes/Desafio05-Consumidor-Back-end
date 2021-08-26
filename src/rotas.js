@@ -12,6 +12,7 @@ rotas.post('/login', login.loginConsumidor);
 
 rotas.use(verificarToken);
 
+rotas.get('/categorias', restaurantes.listaDeCategoria);
 rotas.get('/restaurantes', restaurantes.listarRestaurantes);
 rotas.get('/restaurantes/:id', restaurantes.obterRestaurante);
 rotas.get('/restaurantes/:id/produtos', produtos.listarProdutos);
