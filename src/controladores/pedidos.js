@@ -135,6 +135,10 @@ async function detalharPedido(req, res) {
                 "pedido.saiu_para_entrega as saiuParaEntrega",
                 "pedido.entregue as foiEntregue"
             );
+
+            if(!pedido) {
+                return res.status(404).json("Não foi encontrado nenhum pedido.");
+            }
         
         const itensDoPedido = await knex("itens_do_pedido")
             .join("produto", "itens_do_pedido.produto_id", "produto.id")
