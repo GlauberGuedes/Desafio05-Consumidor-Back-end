@@ -2,7 +2,8 @@ CREATE TABLE consumidor (
 	id SERIAL NOT NULL PRIMARY KEY,
   	nome VARCHAR(100) NOT NULL,
   	email VARCHAR(100) NOT NULL,
-  	telefone BIGINT NOT NULL, 
+  	telefone BIGINT NOT NULL,
+		imagem TEXT,
   	senha TEXT NOT NULL
 );
 
