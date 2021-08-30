@@ -114,17 +114,16 @@ async function dadosPedido(req, res) {
     }
 }
 
-async function detalharPedido(req, res) {
+async function listarPedidos(req, res) {
     const { consumidor } = req;
 
     try {
-        const pedido = await knex("pedido")
+        const pedidos = await knex("pedido")
             .join("restaurante", "pedido.restaurante_id", "restaurante.id")
             .join("categoria", "restaurante.categoria_id", "categoria.id")
             .where({ consumidor_id: consumidor.id })
             .where({ entregue: false })
             .orderBy("pedido.id", "desc")
-            .first()
             .select(
                 "pedido.id as idPedido",
                 "restaurante.nome as nomeRestaurante",
@@ -137,11 +136,12 @@ async function detalharPedido(req, res) {
                 "pedido.entregue as foiEntregue"
             );
 
-            if(!pedido) {
-                return res.status(404).json("Não foi encontrado nenhum pedido.");
-            }
+        if (pedidos.length === 0) {
+            return res.status(404).json("Não foi encontrado nenhum pedido.");
+        }
         
-        const itensDoPedido = await knex("itens_do_pedido")
+        for (let pedido of pedidos) {
+            const itensDoPedido = await knex("itens_do_pedido")
             .join("produto", "itens_do_pedido.produto_id", "produto.id")
             .where({ pedido_id: pedido.idPedido })
             .select(
@@ -150,11 +150,11 @@ async function detalharPedido(req, res) {
                 "itens_do_pedido.quantidade",
                 "itens_do_pedido.subtotal as subtotalProduto"
             );   
-
-            pedido.itensPedido = itensDoPedido;
-        
-        return res.status(200).json(pedido);
             
+            pedido.itensPedido = itensDoPedido;
+        }
+        
+        return res.status(200).json(pedidos);
     } catch (error) {
         return res.status(400).json(error.message);
     }
@@ -221,7 +221,7 @@ async function desativarEntrega(req, res) {
 module.exports = {
     registrarPedido,
     dadosPedido,
-    detalharPedido,
+    listarPedidos,
     ativarEntrega,
     desativarEntrega
 }

@@ -20,7 +20,7 @@ rotas.get('/consumidor', consumidor.obterConsumidor);
 rotas.post('/endereco', consumidor.cadastrarEndereco);
 rotas.put('/consumidor', consumidor.atualizarConsumidor);
 rotas.post('/pedidos', pedidos.registrarPedido);
-rotas.get('/pedidos', pedidos.detalharPedido);
+rotas.get('/pedidos', pedidos.listarPedidos);
 rotas.post('/dados-pedido', pedidos.dadosPedido);
 rotas.post('/entregas/:id/ativar', pedidos.ativarEntrega);
 rotas.post('/entregas/:id/desativar', pedidos.desativarEntrega);
